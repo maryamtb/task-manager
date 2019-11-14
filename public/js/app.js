@@ -13,8 +13,9 @@ authForm.addEventListener('submit', (e) => {
             if (data.error) {
                 console.log(error)
             } else {
-                user.name
-                user.email
+                user.name,
+                user.email,
+                user.password,
                 user.avatar
             }
         })
