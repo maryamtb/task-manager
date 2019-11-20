@@ -23,15 +23,16 @@ router.post('/users', async (req, res) => {
         await user.save()
         const token = await user.generateAuthToken()
         res.cookie('auth_token', token)
-        res.sendFile(path.resolve(__dirname, '..', 'views', 'private.html'))
+        res.sendFile(path.resolve(__dirname, '..', 'views', 'profile.html'))
 
-        // sendWelcomeEmail(user.email, user.name)
+        sendWelcomeEmail(user.email, user.name)
         // const token = await user.generateAuthToken()
         // res.status(201).send({ user, token })
     } catch (e) {
         res.status(400).send(e)
     }
 })
+
 
 
 router.post('/users/login', async (req, res) => {

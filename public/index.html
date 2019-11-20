@@ -13,14 +13,13 @@
 
 </header>
   <body>
-    <form method="POST" action="/users/login">
+    <form action="/profile" method="GET" enctype="application/x-www-form-urlencoded">
       <label for="email">Email</label>
       <input type="text" name="email" id="email" />
       <label for="password">Password</label>
       <input type="text" name="password" id="password" />
-      <button>Login</button>
-
-      <p>Don't have an account? Create one <a href="register.html">here</a>.</p>
+      <button type="submit" value="Submit">Submit</button>
     </form>
+    <p>Don't have an account? Create one <a href="register.html">here</a>.</p>
   </body>
 </html>

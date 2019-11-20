@@ -1,8 +1,13 @@
 //require('dotenv').config({ path: 'dev.env' });
-
 const path = require('path')
 const express = require('express')
+const bodyParser = require('body-parser')
 const hbs = require('hbs')
+
+var jsonParser = bodyParser.json()
+
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 require('./db/mongoose.js')
 
 //require('./config/dev.env')
@@ -10,6 +15,10 @@ const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')
 
 const app = express()
+
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(bodyParser.json())
 
 //Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -32,14 +41,14 @@ app.get('/', (req, res) => {
     })
 })
 
-app.get('/users', (req, res) => {
+app.get('/users', jsonParser, (req, res) => {
     res.render('users', {
         title: 'List of Users',
         name: 'Users'
     })
 })
 
-app.get('/users/login', (req, res) => {
+app.get('/profile', (req, res) => {
     if (!req.query.user) {
         return res.send({
             error: 'This account doesnt exist. You must create a new user.'
