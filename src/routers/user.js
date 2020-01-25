@@ -8,6 +8,11 @@ const path = require("path");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const hbs = require("hbs");
+var jwt = require("jsonwebtoken");
+
+// require('../../config/dev.env')
+// var jws = require('express-jwt-session')
+// var isAuthenticated = jws.isAuthenticated(PROCESS.ENV.JWT_SECRET);
 
 var jsonParser = bodyParser.json();
 
@@ -49,7 +54,7 @@ router.post("/users", async (req, res) => {
   }
 });
 
-router.post("/users/login", async (req, res) => {
+router.post("/users/login", async (req, res, next) => {
   try {
     // console.log("ok")
     const user = await User.findByCredentials(
@@ -62,12 +67,21 @@ router.post("/users/login", async (req, res) => {
       title: "Profile",
       name: user.name
     });
+    next();
   } catch (e) {
     res.status(400).send();
   }
 });
 
-router.post("/users/logout", auth, async (req, res) => {
+router.use(function (user, req, res, next) {
+  res.status(200).send(user);
+});
+
+router.get('/users/login', (req, res) => {
+    res.status(200).send({ auth: true, token: token });
+});
+
+router.post("/users/logout", async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(token => {
       return token.token != req.token;
@@ -90,23 +104,39 @@ router.post("/users/logoutAll", auth, async (req, res) => {
   }
 });
 
-router.get("/users/me", async (req, res) => {
-  try {
+// router.get("/users/me",  async (req, res) => {
+//   try {
+//     res.cookie("Authorization", json['auth_token']);
+//         res.cookie("auth_token", token);
+
+//     const user = await req.cookies.Authorization;
+//     res.render("update", {
+//       title: "Update Profile",
+//       name: user.name,
+//       email: user.email
+//     });
+//   } catch (e) {
+//     res.status(400).send();
+//   }
+// });
+
+router.get("/users/me", function(req, res) {
+  var token = req.headers['x-access-token'];
+  if (!token)
+    return res.status(401).send({ auth: false, message: "No token provided." });
+
+  jwt.verify(token, config.secret, function(err, decoded) {
+    if (err)
+      return res
+        .status(500)
+        .send({ auth: false, message: "Failed to authenticate token." });
+
     res.render("update", {
       title: "Update Profile",
-      name: user.name,
-      email: user.email
+      name: user.name
     });
-  } catch (e) {
-    res.status(400).send();
-  }
+  });
 });
-
-// router.get("/users/me", bodyParser, async (req, res) => {
-//   // res.send(req.user);
-//   res.sendFile(path.resolve(__dirname, "..", "views", "index.hbs"));
-
-// });
 
 const upload = multer({
   limits: {
