@@ -4,19 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Register</title>
+    <title>Document</title>
   </head>
   <body>
-    <h1>Task Manager</h1>
-    <p>Already have an account? Login <a href="/">here</a>.</p>
-    <form action="/users" method="POST" enctype="application/x-www-form-urlencoded">
+    <a href="/">Login</a>
+    <form method="POST" action="/users">
       <label for="name">Name</label>
       <input type="text" name="name" id="name" />
       <label for="email">Email</label>
       <input type="text" name="email" id="email" />
       <label for="password">Password</label>
       <input type="text" name="password" id="password" />
-      <input type="submit" value="Submit" />
+      <button>Register</button>
     </form>
   </body>
 </html>

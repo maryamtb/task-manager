@@ -2,23 +2,25 @@ const sgMail = require('@sendgrid/mail')
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-const sendWelcomeEmail = ( (email, name) => {
+const sendWelcomeEmail = (email, name) => {
     sgMail.send({
         to: email,
-        from: 'maryamtb.17@gmail.com',
-        subject: 'Welcome to Task Manager!',
-        text: `Hey, ${name}, thank you for signing up! Let me know how you get along with the app.`
+        from: 'andrew@mead.io',
+        subject: 'Thanks for joining in!',
+        text: `Welcome to the app, ${name}. Let me know how you get along with the app.`
     })
-})
+}
 
-const sendByeEmail = ( (email, name) => {
+const sendCancelationEmail = (email, name) => {
     sgMail.send({
         to: email,
-        from: 'maryamtb.17@gmail.com',
-        subject: "Sorry to see you go!",
-        text: `Hi, ${name}, your Task Manager account has been successfully canceled. We hope to have you back sometime soon.`
+        from: 'andrew@mead.io',
+        subject: 'Sorry to see you go!',
+        text: `Goodbye, ${name}. I hope to see you back sometime soon.`
     })
-})
+}
 
-
-module.exports = { sendWelcomeEmail, sendByeEmail }
+module.exports = {
+    sendWelcomeEmail,
+    sendCancelationEmail
+}
