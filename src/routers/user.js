@@ -11,7 +11,7 @@ const hbs = require("hbs");
 
 var jsonParser = bodyParser.json();
 
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.use(bodyParser.urlencoded({ extended: false }));
 
@@ -23,7 +23,6 @@ const viewsPath = path.join(__dirname, "./src/templates/views");
 const partialsPath = path.join(__dirname, "./src/templates/partials");
 
 //Setup handlebars engine and views location
-
 
 //Setup static directory to serve
 router.use(express.static(publicDirectoryPath));
@@ -59,27 +58,27 @@ router.post("/users/login", async (req, res) => {
     );
     const token = await user.generateAuthToken();
     res.cookie("auth_token", token);
-    res.render('profile', {
-      title: 'Profile',
+    res.render("profile", {
+      title: "Profile",
       name: user.name
-  })
+    });
   } catch (e) {
     res.status(400).send();
   }
 });
 
-router.post('/users/logout', auth, async (req, res) => {
+router.post("/users/logout", auth, async (req, res) => {
   try {
-     req.user.tokens = req.user.tokens.filter((token) => {
-         return token.token != req.token
-     })
-     await req.user.save()
+    req.user.tokens = req.user.tokens.filter(token => {
+      return token.token != req.token;
+    });
+    await req.user.save();
 
-     res.send()
+    res.send();
   } catch (e) {
-      res.status(500).send()
+    res.status(500).send();
   }
-})
+});
 
 router.post("/users/logoutAll", auth, async (req, res) => {
   try {
@@ -93,19 +92,11 @@ router.post("/users/logoutAll", auth, async (req, res) => {
 
 router.get("/users/me", async (req, res) => {
   try {
-    const user = await User.findByCredentials(
-      req.body.email,
-      req.body.password
-    );
-    const token = await user.generateAuthToken();
-
-    res.send('update', {
-      title: 'Update Profile',
+    res.render("update", {
+      title: "Update Profile",
       name: user.name,
-      email: user.email,
-      avatar: user.avatar,
-    })
-    // res.sendFile(path.resolve(__dirname, "..", "templates", "views/profile.hbs"));
+      email: user.email
+    });
   } catch (e) {
     res.status(400).send();
   }
