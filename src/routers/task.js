@@ -11,13 +11,18 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 router.use(bodyParser.json());
 
+//Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "./src/templates/views");
 const partialsPath = path.join(__dirname, "./src/templates/partials");
 
+//Setup handlebars engine and views location
+
+//Setup static directory to serve
 router.use(express.static(publicDirectoryPath));
 router.use(express.static(viewsPath));
 router.use(express.static(partialsPath));
+
 
 router.get('/tasks', auth, async (req, res) => {
   const match = {}
@@ -42,15 +47,14 @@ router.get('/tasks', auth, async (req, res) => {
               sort
           }
       }).execPopulate()
-      // res.send(req.user.tasks)
-      // const task = req.user.tasks
-      // res.sendFile("tasks", {
-      //   title: "Tasks",
-      //   description: task.description,
-      //   status: task.completed,
-      //   owner: task.owner
-      // });
-      res.sendFile(path.resolve(__dirname, "..", "templates", "views/tasks.hbs"));
+      const task = res.send(req.user.tasks)
+      res.render("tasks", {
+        title: "View Tasks",
+        description: task.description,
+        status: task.completed,
+        owner: task.owner
+      });
+
 
   } catch (e) {
       res.status(500).send()
@@ -65,12 +69,14 @@ router.post("/tasks", auth, async (req, res) => {
 
   try {
     await task.save();
-    res.render("add task", {
-      title: "Add Task",
-      description: task.description,
-      status: task.completed,
-      owner: task.owner
-    });
+    res.sendFile(path.resolve(__dirname, "..", "views", "tasks.html"));
+
+    // res.render("tasks", {
+    //   title: "tasks",
+    //   description: task.description,
+    //   status: task.completed,
+    //   owner: task.owner
+    // });
   } catch (e) {
     res.status(400).send(e);
   }
