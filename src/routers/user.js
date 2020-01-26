@@ -11,6 +11,7 @@ const hbs = require("hbs");
 var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 
+
 router.use(cookieParser());
 
 // require('../../config/dev.env')
@@ -34,6 +35,10 @@ const partialsPath = path.join(__dirname, "./src/templates/partials");
 
 //Setup static directory to serve
 router.use(express.static(publicDirectoryPath));
+router.use(express.static(viewsPath));
+router.use(express.static(partialsPath));
+
+
 
 router.get("/users", async (req, res) => {
   try {
@@ -155,7 +160,7 @@ router.post(
 
 router.get("/users/:id/avatar", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(user.params.id);
     if (!user || !user.avatar) {
       throw new Error();
     }
@@ -208,6 +213,10 @@ router.delete("/users/me", auth, async (req, res) => {
     res.status(500).send();
   }
 });
+
+// router.set("view engine", "hbs");
+// router.set("views", viewsPath);
+hbs.registerPartials(partialsPath);
 
 router.use(express.json());
 
