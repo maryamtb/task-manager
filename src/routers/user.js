@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+// var upload = multer().single('avatar')
 const sharp = require("sharp");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
@@ -10,7 +11,6 @@ const bodyParser = require("body-parser");
 const hbs = require("hbs");
 var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
-
 
 router.use(cookieParser());
 
@@ -37,8 +37,6 @@ const partialsPath = path.join(__dirname, "./src/templates/partials");
 router.use(express.static(publicDirectoryPath));
 router.use(express.static(viewsPath));
 router.use(express.static(partialsPath));
-
-
 
 router.get("/users", async (req, res) => {
   try {
@@ -72,6 +70,7 @@ router.get("/users/login", async (req, res) => {
 });
 
 router.post("/users/login", async (req, res) => {
+  const avatar = req.file;
   try {
     const user = await User.findByCredentials(
       req.body.email,
@@ -81,7 +80,8 @@ router.post("/users/login", async (req, res) => {
     res.cookie("auth_token", token);
     res.render("dashboard", {
       title: "Dashboard",
-      name: user.name
+      name: user.name,
+      avatar: avatar
     });
   } catch (e) {
     res.status(400).send();
@@ -90,77 +90,67 @@ router.post("/users/login", async (req, res) => {
 
 router.get("/users/me", auth, async (req, res) => {
   try {
-    const user = req.user
+    const user = req.user;
+    const avatar = req.file;
+
     res.render("profile", {
       title: "Profile",
       name: user.name,
       id: user.id,
       email: user.email,
-      avatar: user.avatar
+      avatar: avatar
     });
   } catch (e) {
     res.status(400).send();
   }
 });
 
-router.post("/users/logout", async (req, res) => {
-  try {
-    req.user.tokens = req.user.tokens.filter(token => {
-      return token.token != req.token;
-    });
-    await req.user.save();
-
-    res.send();
-  } catch (e) {
-    res.status(500).send();
-  }
-});
-
-router.post("/users/logoutAll", auth, async (req, res) => {
-  try {
-    req.user.tokens = [];
-    await req.user.save();
-    res.send();
-  } catch (e) {
-    res.status(500).send();
-  }
-});
+const FILE_PATH = "uploads";
 
 const upload = multer({
+  dest: `${FILE_PATH}/`,
   limits: {
-    fileSize: 10000000
+    files: 5,
+    fieldSize: 2 * 1024 * 1024
   },
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/)) {
-      return cb(new Error("Please upload jpg image."));
+  fileFilter: (req, file, cb) => {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return cb(new Error("Only image are allowed."), false);
     }
-    cb(undefined, true);
+    cb(null, true);
   }
 });
 
-router.post(
-  "/users/me/avatar",
-  auth,
-  upload.single("avatar"),
-  async (req, res) => {
-    const user = req.user
-    const buffer = await sharp(user.file.buffer)
-      .resize({ width: 250, height: 250 })
-      .png()
-      .toBuffer();
-    user.avatar = buffer;
+router.post("/users/me/avatar", upload.single("avatar"), async (req, res) => {
+  try {
+    const avatar = req.file;
 
-    await user.save();
-    res.send();
-  },
-  (error, req, res, next) => {
-    res.status(400).send({ error: error.message });
+    if (!avatar) {
+      res.status(400).send({
+        status: false,
+        data: "No file is selected."
+      });
+    } else {
+      // res.sendFile(path.resolve(__dirname, "..", "views", "avatar.html"));
+
+      res.send({
+        status: true,
+        message: "File is uploaded.",
+        data: {
+          name: avatar.originalname,
+          mimetype: avatar.mimetype,
+          size: avatar.size
+        }
+      });
+    }
+  } catch (err) {
+    res.status(500).send(err);
   }
-);
+});
 
 router.get("/users/:id/avatar", async (req, res) => {
   try {
-    const user = await User.findById(user.params.id);
+    const user = await User.findById(req.params.id);
     if (!user || !user.avatar) {
       throw new Error();
     }
@@ -204,6 +194,19 @@ router.patch("/users/me", auth, async (req, res) => {
   }
 });
 
+router.post("/users/logout", async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter(token => {
+      return token.token != req.token;
+    });
+    await req.user.save();
+
+    res.send();
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
@@ -213,6 +216,16 @@ router.delete("/users/me", auth, async (req, res) => {
     res.status(500).send();
   }
 });
+
+// router.post("/users/logoutAll", auth, async (req, res) => {
+//   try {
+//     req.user.tokens = [];
+//     await req.user.save();
+//     res.send();
+//   } catch (e) {
+//     res.status(500).send();
+//   }
+// });
 
 // router.set("view engine", "hbs");
 // router.set("views", viewsPath);

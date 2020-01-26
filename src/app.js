@@ -40,12 +40,12 @@ app.use(cookieParser())
 //   });
 // });
 
-app.get("/users", jsonParser, (req, res) => {
-  res.render("users", {
-    title: "List of Users",
-    name: "Users"
-  });
-});
+// app.get("/users", jsonParser, (req, res) => {
+//   res.render("users", {
+//     title: "List of Users",
+//     name: "Users"
+//   });
+// });
 
 // app.get("/profile", auth, (req, res) => {
 //   if (!req.query.user) {
