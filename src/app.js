@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const hbs = require("hbs");
+var cookieParser = require('cookie-parser')
 
 var jsonParser = bodyParser.json();
 
@@ -30,6 +31,7 @@ hbs.registerPartials(partialsPath);
 
 // //Setup static directory to serve
 app.use(express.static(publicDirectoryPath));
+app.use(cookieParser())
 
 // app.get("/", (req, res) => {
 //   res.render("index", {
