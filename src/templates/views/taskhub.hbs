@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<head>
+    <title>tasks</title>
+    <link rel="icon" href=" ">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div>
+        <form>
+            <input type="button" value="Return" onclick="history.back()">
+        </form>
+        <form method="patch" action="/users/me">
+            <button>Profile</button>
+        </form>
+        <form method="POST" action="/users/logout">
+            <button>Log Out</button>
+        </form>
+
+        <form method="POST" action="/tasks">
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description" />
+            {{!-- <label for="complete">Completed?</label>
+            <input type="checkbox" name="completed" id="checkbox" /> --}}
+            <button>Add Task</button>
+        </form>
+
+        <div>
+            <form>
+                <p>Filter by:
+                    <input type="button" onclick="window.location.href = '/tasks?sortBy=createdAt:desc';"
+                        value="Date" />
+                    <input type="button" onclick="window.location.href = '/tasks?completed=true';" value="Complete" />
+                    <input type="button" onclick="window.location.href = '/tasks?';" value="Disable filter" />
+                </p>
+            </form>
+        </div>
+
+
+
+        <br><br />
+        {{#each taskList}}
+            <li>{{description}} Done?{{completed}}<a href='/tasks/{{this._id}}'>Edit</a></li>
+        {{/each}}
+
+        <br />
+
+        <form method="patch" action="/tasks/:id">
+            <button>Update Task</button>
+        </form>
+
+        <form method="DELETE" action="/tasks/delete">
+            <button>Delete Task</button>
+        </form>
+
+
+    </div>
+
+    <script src='../../../public/js/app.js'></script>
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,68 @@
+
+
+<head>
+    <title>Profile</title>
+    <link rel="icon" href=" ">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+        {{!-- {{>header}} --}}
+
+        
+
+        <form>
+            <input type="button" value="Return" onclick="history.back()">
+        </form>
+        <form action="/tasks" method="get">
+            <button>Tasks</button>
+        </form>
+        <form method="POST" action="/users/logout">
+            <button>Log Out</button>
+        </form>
+        <br />
+        <h2>Welcome back, {{name}}!</h2>
+
+
+       
+
+        Upload your avatar
+
+        <form action="/users/me/avatar" method="post" enctype="multipart/form-data">
+            <input type="file" name="avatar" />
+            <button>Upload</button>
+        </form>
+
+        {{ user.avatar }}
+
+        {{!-- <form method="GET" action="/users/:id/avatar">
+            <button>Display Avatar</button>
+        </form> --}}
+
+        {{ data.mimetype}}
+
+        <br></br>
+
+        <form method="DELETE" action="/users/:id/avatar">
+            <button>Delete Avatar</button>
+        </form>
+
+        <p>Name: {{name}}</p>
+        <p>Email: {{email}}</p>
+        <p>id: {{id}}</p>
+
+         <br></br>
+
+        {{description}}
+
+        <form method="DELETE" action="/users/me">
+            <button>Delete Account</button>
+        </form>
+
+        <br />
+
+       
+    </div>
+
+</body>
+

@@ -43,31 +43,30 @@ router.post("/users", async (req, res) => {
 
   try {
     await user.save();
-    sendWelcomeEmail(user.email, user.name);
+    // sendWelcomeEmail(user.email, user.name);
     const token = await user.generateAuthToken();
-    res.cookie('auth_token', token)
-    res.sendFile(path.resolve(__dirname, '..', 'views', 'private.html'))
+    res.cookie("auth_token", token);
+    res.sendFile(path.resolve(__dirname, "..", "views", "private.html"));
     // res.status(201).send({ user, token });
   } catch (e) {
     res.status(400).send(e);
   }
 });
 
-
-
 router.post("/users/login", async (req, res) => {
   try {
-    const user = await User.findByCredentials(req.body.email, req.body.password)
+    const user = await User.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
     const token = await user.generateAuthToken();
-    res.cookie('auth_token', token)
-    res.sendFile(path.resolve(__dirname, '..', 'views', 'private.html'))
+    res.cookie("auth_token", token);
+    res.sendFile(path.resolve(__dirname, "..", "views", "private.html"));
     // res.send({ user, token });
   } catch (e) {
     res.status(400).send();
   }
 });
-
-
 
 router.post("/users/logout", auth, async (req, res) => {
   try {
@@ -75,7 +74,7 @@ router.post("/users/logout", auth, async (req, res) => {
       return token.token !== req.token;
     });
     await req.user.save();
-    res.sendFile(path.resolve(__dirname, '..', 'views', 'logout.html'))
+    res.sendFile(path.resolve(__dirname, "..", "views", "logout.html"));
     res.send();
   } catch (e) {
     res.status(500).send();
@@ -93,9 +92,11 @@ router.post("/users/logoutAll", auth, async (req, res) => {
 });
 
 router.get("/users/me", auth, async (req, res) => {
-  res.render('profile', {
-    name: req.user.name
-})
+  res.render("profile", {
+    name: req.user.name,
+    email: req.user.email,
+    id: req.user.id
+  });
 });
 
 router.patch("/users/me", auth, async (req, res) => {
