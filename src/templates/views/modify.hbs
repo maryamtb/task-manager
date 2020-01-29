@@ -5,8 +5,42 @@
 </head>
 
 <body>
-{{description}}
+
+
+    {{taskList}}
+
+    {{owner}}
+
+    {{_id}}
+
+    <form method="PATCH" action="/tasks">
+        <label for="description">New Task Description</label>
+        <input type="text" name="description" />
+        <button>Update</button>
+    </form>
+    <br>
+    <br>
+    <form method="PATCH" action="/tasks">
+        <label for="complete">New Task Status</label>
+        <input type="checkbox" name="completed" id="?completed=" />
+        <button>Update</button>
+
+    </form>
+    <form method="DELETE" action="/tasks">
+        <button>Delete Task</button>
+    </form>
+
+
+    <form>
+        <button>
+            <a href='/tasks?sortBy=createdAt:desc'>Cancel</a>
+        </button>
+    </form>
+
+    
 
 </body>
+
+<script src='../../../public/js/app.js'></script>
 
 </html>
