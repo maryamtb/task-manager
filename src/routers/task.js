@@ -74,17 +74,23 @@ router.get("/tasks", auth, async (req, res) => {
     //   res.render('taskhub', {
     //     taskList: req.user.tasks
     // })
-    res.render('taskhub', {
-        title: 'tasks',
-        task1: req.user.tasks[0],
-        _id: req.user.tasks[0]._id,
-        task2: req.user.tasks[1],
-        task3: req.user.tasks[2],
-        task4: req.user.tasks[3],
-        task5: req.user.tasks[4],
-        allTasks: req.user.tasks,
+    // res.render('taskhub', {
+    //     title: 'tasks',
+    //     task1: req.user.tasks[0],
+    //     _id: req.user.tasks[0]._id,
+    //     task2: req.user.tasks[1],
+    //     task3: req.user.tasks[2],
+    //     task4: req.user.tasks[3],
+    //     task5: req.user.tasks[4],
+    //     allTasks: req.user.tasks,
 
-      });
+    //   });
+    res.render('taskhub', {
+      title: 'tasks',
+      taskList: req.user.tasks
+
+    });
+
   } catch (e) {
     res.status(500).send();
   }
