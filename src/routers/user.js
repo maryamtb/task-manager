@@ -62,7 +62,6 @@ router.post("/users/login", async (req, res) => {
     const token = await user.generateAuthToken();
     res.cookie("auth_token", token);
     res.sendFile(path.resolve(__dirname, "..", "views", "private.html"));
-    // res.send({ user, token });
   } catch (e) {
     res.status(400).send();
   }
@@ -75,7 +74,6 @@ router.post("/users/logout", auth, async (req, res) => {
     });
     await req.user.save();
     res.sendFile(path.resolve(__dirname, "..", "views", "logout.html"));
-    res.send();
   } catch (e) {
     res.status(500).send();
   }

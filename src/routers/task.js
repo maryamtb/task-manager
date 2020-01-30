@@ -7,18 +7,16 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 router.use(cookieParser());
-router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.use(bodyParser.json());
 
-//Define paths for Express config
+
 const publicDirectoryPath = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "./src/templates/views");
 const partialsPath = path.join(__dirname, "./src/templates/partials");
 
-//Setup handlebars engine and views location
 
-//Setup static directory to serve
 router.use(express.static(publicDirectoryPath));
 router.use(express.static(viewsPath));
 router.use(express.static(partialsPath));
@@ -40,9 +38,7 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
-// GET /tasks?completed=true
-// GET /tasks?limit=10&skip=20
-// GET /tasks?sortBy=createdAt:desc
+
 router.get("/tasks", auth, async (req, res) => {
   const match = {};
   const sort = {};
@@ -87,14 +83,17 @@ router.get("/tasks/:id", auth, async (req, res) => {
       return res.status(404).send();
     }
 
-    res.render("modify", {
-      title: "Modify",
+    res.render("modified", {
+      title: "Modified",
       taskList: req.user.tasks
     });
+
   } catch (e) {
     res.status(500).send();
   }
 });
+
+
 
 router.patch("/tasks/:id", auth, async (req, res) => {
   const updates = Object.keys(req.body);
@@ -103,9 +102,9 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     allowedUpdates.includes(update)
   );
 
-  if (!isValidOperation) {
-    return res.status(400).send({ error: "Invalid updates!" });
-  }
+  // if (!isValidOperation) {
+  //   return res.status(400).send({ error: "Invalid updates!" });
+  // }
 
   try {
     const task = await Task.findOne({
@@ -118,17 +117,17 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     }
 
     updates.forEach(update => (task[update] = req.body[update]));
-    await task.save();
-    res.render("taskhub", {
-      title: "Tasks",
-      taskList: req.user.tasks,
-      _id: req.params.id,
-      owner: req.user._id
+    // await task.save();
+    res.render("modified", {
+      title: "Modified"
     });
+
   } catch (e) {
     res.status(400).send(e);
   }
 });
+
+
 
 router.delete("/tasks/:id", auth, async (req, res) => {
   try {
@@ -140,9 +139,8 @@ router.delete("/tasks/:id", auth, async (req, res) => {
     if (!task) {
       res.status(404).send();
     }
-
-    res.render("modify", {
-      title: "Modify"
+    res.render("modified", {
+      title: "Modified"
     });
   } catch (e) {
     res.status(500).send();

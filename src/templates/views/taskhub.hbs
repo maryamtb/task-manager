@@ -2,7 +2,6 @@
 
 <head>
     <title>tasks</title>
-    <link rel="icon" href=" ">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
@@ -21,8 +20,6 @@
         <form method="POST" action="/tasks">
             <label for="description">Description</label>
             <input type="text" name="description" id="description" />
-            {{!-- <label for="complete">Completed?</label>
-            <input type="checkbox" name="completed" id="checkbox" /> --}}
             <button>Add Task</button>
         </form>
 
@@ -38,18 +35,33 @@
         </div>
 
 
-
-        <br><br />
         {{#each taskList}}
-            <li>{{description}} Done?{{completed}}<a href='/tasks/{{this._id}}'>Edit</a></li>
+        <ul data-id="{{_id}}">
+            <li><big>{{description}}</big></li>
+            <li><small>{{completed}}</small></li>
+            <li><small>{{_id}}</small></li>
+
+
+            <form method="POST" action="/tasks/{{_id}}?_method=PATCH">
+                <input type="hidden" name="id">
+                <input type="text" name="description">
+                <input type="radio" name="completed" value="true">Yes<br>
+                <input type="radio" name="completed" value="false">No<br>
+                <button><input type="hidden" name="_method" />Update</button>
+            </form>
+
+            <form method="POST" action="/tasks/{{_id}}?_method=DELETE">
+                <button><input type="hidden" name="_method" value="DELETE" />Remove</button>
+            </form>
+
+        </ul>
         {{/each}}
 
         <br />
-        
+
 
     </div>
 
-    <script src='../../../public/js/app.js'></script>
 
 
 </body>
