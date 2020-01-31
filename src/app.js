@@ -8,8 +8,12 @@ const methodOverride = require('method-override');
 var jsonParser = bodyParser.json();
 
 // var urlencodedParser = bodyParser.urlencoded({ extended: false })
+const dotenv = require("dotenv");
+
+dotenv.config('env');
 
 require("./db/mongoose.js");
+
 
 const userRouter = require("./routers/user");
 const taskRouter = require("./routers/task");

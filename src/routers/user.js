@@ -8,14 +8,13 @@ const { sendWelcomeEmail, sendByeEmail } = require("../emails/account");
 const path = require("path");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const hbs = require("hbs");
+
 var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-// require('../../config/dev.env')
-// var jws = require('express-jwt-session')
+require('../../config/.dev.env')
 // var isAuthenticated = jws.isAuthenticated(PROCESS.ENV.JWT_SECRET);
 
 var jsonParser = bodyParser.json();
@@ -26,14 +25,11 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 router.use(bodyParser.json());
 
-//Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "./src/templates/views");
 const partialsPath = path.join(__dirname, "./src/templates/partials");
 
-//Setup handlebars engine and views location
 
-//Setup static directory to serve
 router.use(express.static(publicDirectoryPath));
 router.use(express.static(viewsPath));
 router.use(express.static(partialsPath));

@@ -4,6 +4,9 @@ const express = require("express");
 
 const cookieParser = require("cookie-parser");
 
+
+
+
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
