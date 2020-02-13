@@ -8,9 +8,6 @@
 
 <body>        
 
-        {{!-- <form>
-            <input type="button" value="Return" onclick="history.back()">
-        </form> --}}
         <form action="/tasks" method="get">
             <button>Tasks</button>
         </form>
@@ -36,10 +33,6 @@
         {{/if}}
 
         <br></br>
-
-        {{!-- <form method="DELETE" action="/users/{{id}}/avatar">
-            <button>Delete Avatar</button>
-        </form> --}}
 
         <form method="POST" action="/users/me/avatar?_method=DELETE">
             <button><input type="hidden" name="_method" value="DELETE" />Delete Avatar</button>

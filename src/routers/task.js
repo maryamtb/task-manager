@@ -138,11 +138,11 @@ router.delete("/tasks/:id", auth, async (req, res) => {
       res.status(404).send();
     }
     await task.save();
+    
+  } catch (e) {
     res.render("modified", {
       title: "Modified"
     });
-  } catch (e) {
-    res.status(500).send();
   }
 });
 

@@ -66,7 +66,13 @@ router.post("/users/login", async (req, res) => {
     );
     const token = await user.generateAuthToken();
     res.cookie("auth_token", token);
-    res.sendFile(path.resolve(__dirname, "..", "views", "private.html"));
+    // res.sendFile(path.resolve(__dirname, "..", "templates/views", "profile.hbs"));
+    res.render("profile", {
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      avatar: user.avatar
+    });
   } catch (e) {
     res.send("Hey, you didn't sign up.")
   }
@@ -126,7 +132,6 @@ router.patch("/users/me", auth, async (req, res) => {
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
-    sendCancelationEmail(req.user.email, req.user.name);
     res.send(req.user);
   } catch (e) {
     res.status(500).send("Account Deleted.");
