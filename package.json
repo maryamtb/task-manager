@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "env-cmd": "^9.0.3",
+    "gh-pages": "^2.2.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.1",
     "supertest": "^4.0.2"
