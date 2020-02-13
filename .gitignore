@@ -1,3 +1,4 @@
 node_modules
-.git_ignore
+.gitignore
+.DS_Store
 /config
