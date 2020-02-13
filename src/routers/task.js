@@ -16,6 +16,7 @@ const publicDirectoryPath = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "./src/templates/views");
 const partialsPath = path.join(__dirname, "./src/templates/partials");
 
+// require('../../config/.dev.env')
 
 router.use(express.static(publicDirectoryPath));
 router.use(express.static(viewsPath));
@@ -66,7 +67,8 @@ router.get("/tasks", auth, async (req, res) => {
       .execPopulate();
     res.render("taskhub", {
       title: "tasks",
-      taskList: req.user.tasks
+      taskList: req.user.tasks,
+      name: req.user.name
     });
   } catch (e) {
     res.status(500).send();
@@ -117,10 +119,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     }
 
     updates.forEach(update => (task[update] = req.body[update]));
-    // await task.save();
-    res.render("modified", {
-      title: "Modified"
-    });
+    await task.save();
 
   } catch (e) {
     res.status(400).send(e);
@@ -138,6 +137,7 @@ router.delete("/tasks/:id", auth, async (req, res) => {
     if (!task) {
       res.status(404).send();
     }
+    await task.save();
     res.render("modified", {
       title: "Modified"
     });

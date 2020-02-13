@@ -2,18 +2,16 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const hbs = require("hbs");
+const cors = require('cors');
 var cookieParser = require('cookie-parser')
 const methodOverride = require('method-override');
 
 var jsonParser = bodyParser.json();
 
 // var urlencodedParser = bodyParser.urlencoded({ extended: false })
-const dotenv = require("dotenv");
-
-dotenv.config('env');
+require('dotenv').config({path: './config/.env'})
 
 require("./db/mongoose.js");
-
 
 const userRouter = require("./routers/user");
 const taskRouter = require("./routers/task");
@@ -23,6 +21,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(methodOverride('_method'));
 

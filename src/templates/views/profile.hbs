@@ -6,14 +6,11 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
-<body>
-        {{!-- {{>header}} --}}
+<body>        
 
-        
-
-        <form>
+        {{!-- <form>
             <input type="button" value="Return" onclick="history.back()">
-        </form>
+        </form> --}}
         <form action="/tasks" method="get">
             <button>Tasks</button>
         </form>
@@ -22,7 +19,7 @@
         </form>
         <br />
 
-            <h2>Your Profile</h2>
+            <h2>Hey, {{name}}.</h2>
 
 
         Upload your avatar
@@ -32,18 +29,20 @@
             <button>Upload</button>
         </form>
 
-        {{ user.avatar }}
-
-        {{!-- <form method="GET" action="/users/:id/avatar">
-            <button>Display Avatar</button>
-        </form> --}}
-
-        {{ data.mimetype}}
+        {{#if avatar}}
+            <img src="/users/{{id}}/avatar" />
+        {{else}}
+            <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png" style="height: 150; width: 150" />
+        {{/if}}
 
         <br></br>
 
-        <form method="DELETE" action="/users/:id/avatar">
+        {{!-- <form method="DELETE" action="/users/{{id}}/avatar">
             <button>Delete Avatar</button>
+        </form> --}}
+
+        <form method="POST" action="/users/me/avatar?_method=DELETE">
+            <button><input type="hidden" name="_method" value="DELETE" />Delete Avatar</button>
         </form>
 
         <p>Name: {{name}}</p>
@@ -54,8 +53,9 @@
 
         {{description}}
 
-        <form method="DELETE" action="/users/me">
-            <button>Delete Account</button>
+
+        <form method="POST" action="/users/me?_method=DELETE">
+            <button><input type="hidden" name="_method" value="DELETE"/>Delete Account</button>
         </form>
 
         <br />

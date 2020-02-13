@@ -11,7 +11,7 @@ const taskSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    // User and Task relationship
+
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

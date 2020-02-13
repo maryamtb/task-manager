@@ -9,17 +9,26 @@ const path = require("path");
 const router = express.Router();
 const bodyParser = require("body-parser");
 
-var jwt = require("jsonwebtoken");
-var cookieParser = require("cookie-parser");
+// var jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 router.use(cookieParser());
 
-require('../../config/.dev.env')
-// var isAuthenticated = jws.isAuthenticated(PROCESS.ENV.JWT_SECRET);
+var storage = multer.diskStorage({
+  destination: function (req, file, cb){
+    cb(null, 'public/uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname + '-' +Date.now())
+  }
+});
 
-var jsonParser = bodyParser.json();
+// require('../../config/.dev.env')
+// var isAuthenticated = jws.isAuthenticated(process.env.JWT_SECRET);
 
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+// var jsonParser = bodyParser.json();
+
+// var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.use(bodyParser.urlencoded({ extended: false }));
 
@@ -59,7 +68,7 @@ router.post("/users/login", async (req, res) => {
     res.cookie("auth_token", token);
     res.sendFile(path.resolve(__dirname, "..", "views", "private.html"));
   } catch (e) {
-    res.status(400).send();
+    res.send("Hey, you didn't sign up.")
   }
 });
 
@@ -89,7 +98,8 @@ router.get("/users/me", auth, async (req, res) => {
   res.render("profile", {
     name: req.user.name,
     email: req.user.email,
-    id: req.user.id
+    id: req.user.id,
+    avatar: req.user.avatar
   });
 });
 
@@ -119,7 +129,7 @@ router.delete("/users/me", auth, async (req, res) => {
     sendCancelationEmail(req.user.email, req.user.name);
     res.send(req.user);
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send("Account Deleted.");
   }
 });
 
@@ -129,7 +139,7 @@ const upload = multer({
   },
   fileFilter(req, file, cb) {
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return cb(new Error("Please upload an image"));
+      return cb(new Error("Please upload an image in jpg, jpeg, or png format."));
     }
 
     cb(undefined, true);
@@ -142,12 +152,14 @@ router.post(
   upload.single("avatar"),
   async (req, res) => {
     const buffer = await sharp(req.file.buffer)
-      .resize({ width: 250, height: 250 })
+      .resize({ width: 150, height: 150 })
       .png()
       .toBuffer();
     req.user.avatar = buffer;
     await req.user.save();
-    res.send();
+    res.render("modified", {
+      title: "Modified"
+    });
   },
   (error, req, res, next) => {
     res.status(400).send({ error: error.message });
@@ -157,7 +169,9 @@ router.post(
 router.delete("/users/me/avatar", auth, async (req, res) => {
   req.user.avatar = undefined;
   await req.user.save();
-  res.send();
+  res.render("modified", {
+    title: "Modified"
+  });
 });
 
 router.get("/users/:id/avatar", async (req, res) => {
@@ -168,7 +182,7 @@ router.get("/users/:id/avatar", async (req, res) => {
       throw new Error();
     }
 
-    res.set("Content-Type", "image/png");
+    res.set("Content-Type", "image/jpg");
     res.send(user.avatar);
   } catch (e) {
     res.status(404).send();

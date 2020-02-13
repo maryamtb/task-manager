@@ -7,15 +7,19 @@
 
 <body>
     <div>
-        <form>
+        {{!-- <form>
             <input type="button" value="Return" onclick="history.back()">
-        </form>
+        </form> --}}
         <form method="patch" action="/users/me">
             <button>Profile</button>
         </form>
+        <br />
         <form method="POST" action="/users/logout">
             <button>Log Out</button>
         </form>
+        <br />
+
+        <h2>Your tasks, {{name}}</h2>
 
         <form method="POST" action="/tasks">
             <label for="description">Description</label>
@@ -39,16 +43,16 @@
         <ul data-id="{{_id}}">
             <li><big>{{description}}</big></li>
             <li><small>{{completed}}</small></li>
-            <li><small>{{_id}}</small></li>
+            {{!-- <li><small>{{_id}}</small></li> --}}
 
 
-            <form method="POST" action="/tasks/{{_id}}?_method=PATCH">
+            {{!-- <form method="POST" action="/tasks/{{_id}}?_method=PATCH">
                 <input type="hidden" name="id">
                 <input type="text" name="description">
                 <input type="radio" name="completed" value="true">Yes<br>
                 <input type="radio" name="completed" value="false">No<br>
                 <button><input type="hidden" name="_method" />Update</button>
-            </form>
+            </form> --}}
 
             <form method="POST" action="/tasks/{{_id}}?_method=DELETE">
                 <button><input type="hidden" name="_method" value="DELETE" />Remove</button>
